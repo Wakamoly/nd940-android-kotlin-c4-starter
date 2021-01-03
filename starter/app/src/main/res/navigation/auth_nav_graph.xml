@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_nav_graph"
+    app:startDestination="@id/authWelcomeFragment">
+
+    <fragment
+        android:id="@+id/authWelcomeFragment"
+        android:name="com.udacity.project4.authentication.AuthWelcomeFragment"
+        android:label="auth_welcome_fragment"
+        tools:layout="@layout/auth_welcome_fragment" >
+        <action
+            android:id="@+id/action_authWelcomeFragment_to_remindersActivity"
+            app:destination="@id/remindersActivity" />
+    </fragment>
+
+
+
+    <activity
+        android:id="@+id/remindersActivity"
+        android:name="com.udacity.project4.locationreminders.RemindersActivity"
+        android:label="RemindersActivity"
+        tools:layout="@layout/activity_reminders"/>
+    <activity
+        android:id="@+id/authActivity"
+        android:name="com.udacity.project4.authentication.AuthenticationActivity"
+        android:label="RemindersActivity"
+        tools:layout="@layout/activity_authentication"/>
+
+
+</navigation>
