@@ -26,13 +26,13 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
         <action
-            android:id="@+id/mapsFragment"
-            app:destination="@id/mapsFragment"
+            android:id="@+id/selectLocationFragment"
+            app:destination="@id/selectLocationFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/mapsFragment"
+            app:popUpTo="@id/selectLocationFragment"
             />
     </fragment>
 
@@ -55,19 +55,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+
+        <argument
+            android:name="reminder"
+            app:argType="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
     <fragment
         android:id="@+id/selectLocationFragment"
         android:name="com.udacity.project4.locationreminders.savereminder.selectreminderlocation.SelectLocationFragment"
-        android:label="Select Location"
-        tools:layout="@layout/fragment_select_location"/>
-
-    <fragment
-        android:id="@+id/mapsFragment"
-        android:name="com.udacity.project4.MapsFragment"
         android:label="Reminder Map"
-        tools:layout="@layout/fragment_maps" >
+        tools:layout="@layout/fragment_select_location">
 
         <!-- flipped id to override animations in BottomNavigationUI.kt -->
         <action
@@ -80,6 +80,12 @@
             app:popExitAnim="@anim/slide_out_left"
             app:popUpTo="@id/reminderListFragment"
             />
+
+        <argument
+            android:name="reminder"
+            app:argType="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
 </navigation>

@@ -1,13 +1,22 @@
 package com.udacity.project4.authentication
 
-import android.app.Application
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.utils.FirebaseUserLiveData
+import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val repository: AuthRepository
 ) : BaseViewModel(repository) {
+
+    fun login (
+        email: String,
+        password: String,
+        username: String
+    ) = viewModelScope.launch {
+        repository.login(email, password, username)
+    }
 
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION

@@ -66,3 +66,8 @@ fun View.fadeOut() {
         }
     })
 }
+
+object GeofencingConstants {
+    const val ACTION_GEOFENCE_EVENT = "ACTION_GEOFENCE_EVENT"
+    const val GEOFENCE_RADIUS_METERS = 1609f
+}

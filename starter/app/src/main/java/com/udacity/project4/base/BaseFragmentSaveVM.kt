@@ -19,20 +19,25 @@ import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.authentication.datastore.UserPreferences
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersDatabase
+import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.ViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 /**
  * Base Fragment to observe on the common LiveData objects
  */
-abstract class BaseFragment<VM: BaseViewModel, B: ViewBinding, R: BaseRepository> : Fragment() {
+abstract class BaseFragmentSaveVM<B: ViewBinding> : Fragment() {
 
     protected lateinit var userPreferences: UserPreferences
     protected lateinit var binding : B
-    protected lateinit var viewModel : VM
     protected lateinit var mCtx: Context
+
+    //Get the view model this time as a single to be shared with the other fragment
+    protected val _viewModel: SaveReminderViewModel by inject()
+
     //protected val remoteDataSource = RemoteDataSource()
 
     override fun onCreateView(
@@ -42,8 +47,6 @@ abstract class BaseFragment<VM: BaseViewModel, B: ViewBinding, R: BaseRepository
     ): View? {
         userPreferences = UserPreferences(mCtx)
         binding = getFragmentBinding(inflater, container)
-        val factory = ViewModelFactory(getFragmentRepository())
-        viewModel = ViewModelProvider(this, factory).get(getViewModel())
 
         return binding.root
     }
@@ -59,28 +62,24 @@ abstract class BaseFragment<VM: BaseViewModel, B: ViewBinding, R: BaseRepository
         startActivity(intent)
     }
 
-    abstract fun getViewModel() : Class<VM>
-
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) : B
-
-    abstract fun getFragmentRepository(): R
 
     override fun onStart() {
         super.onStart()
-        viewModel.showErrorMessage.observe(this, Observer {
+        _viewModel.showErrorMessage.observe(this, Observer {
             Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         })
-        viewModel.showToast.observe(this, Observer {
+        _viewModel.showToast.observe(this, Observer {
             Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         })
-        viewModel.showSnackBar.observe(this, Observer {
+        _viewModel.showSnackBar.observe(this, Observer {
             Snackbar.make(this.requireView(), it, Snackbar.LENGTH_LONG).show()
         })
-        viewModel.showSnackBarInt.observe(this, Observer {
+        _viewModel.showSnackBarInt.observe(this, Observer {
             Snackbar.make(this.requireView(), getString(it), Snackbar.LENGTH_LONG).show()
         })
 
-        viewModel.navigationCommand.observe(this, Observer { command ->
+        _viewModel.navigationCommand.observe(this, Observer { command ->
             when (command) {
                 is NavigationCommand.To -> findNavController().navigate(command.directions)
                 is NavigationCommand.Back -> findNavController().popBackStack()

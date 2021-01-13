@@ -47,5 +47,6 @@
     <string name="reminders_header_image_content_description">Reminders header image</string>
     <string name="navigation_view_header_title">Location Reminders</string>
     <string name="app_logo">App logo</string>
+    <string name="selected_location">Selected Location</string>
 
 </resources>

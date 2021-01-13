@@ -12,7 +12,7 @@ import kotlinx.coroutines.*
  * The repository is implemented so that you can focus on only testing it.
  *
  * @param remindersDao the dao that does the Room db operations
- * @param ioDispatcher a coroutine dispatcher to offload the blocking IO tasks
+ * @param ioDispatcher has been moved to BaseRepository calls
  */
 class RemindersLocalRepository(
     private val remindersDao: RemindersDao

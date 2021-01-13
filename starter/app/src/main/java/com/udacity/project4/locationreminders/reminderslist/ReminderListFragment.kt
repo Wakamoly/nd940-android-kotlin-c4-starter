@@ -2,19 +2,17 @@ package com.udacity.project4.locationreminders.reminderslist
 
 import android.os.Bundle
 import android.view.*
-import androidx.databinding.DataBindingUtil
+import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersDao
-import com.udacity.project4.locationreminders.data.local.RemindersDatabase
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
-import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemindersBinding, RemindersLocalRepository>() {
     //use Koin to retrieve the ViewModel instance
@@ -35,7 +33,6 @@ class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemind
         binding.viewModel = viewModel
 
         setHasOptionsMenu(true)
-        //setDisplayHomeAsUpEnabled(false)
         setTitle(getString(R.string.app_name))
 
         binding.refreshLayout.setOnRefreshListener { viewModel.loadReminders() }
@@ -53,28 +50,32 @@ class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemind
         viewModel.loadReminders()
     }
 
-    private fun navigateToAddReminder() {
+    private fun navigateToAddReminder(reminder: ReminderDataItem? = null) {
         //use the navigationCommand live data to navigate between the fragments
         viewModel.navigationCommand.postValue(
             NavigationCommand.To(
-                ReminderListFragmentDirections.toSaveReminder()
+                ReminderListFragmentDirections.toSaveReminder(reminder)
             )
         )
     }
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
-
+            navigateToAddReminder(it)
         }
 
 //        setup the recycler view using the extension function
-        binding.reminderssRecyclerView.setup(adapter)
+        binding.remindersRecyclerView.setup(adapter)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-//                TODO: add the logout implementation
+                AuthUI.getInstance()
+                    .signOut(mCtx)
+                    .addOnCompleteListener { // user is now signed out
+                        logout()
+                    }
             }
         }
         return super.onOptionsItemSelected(item)

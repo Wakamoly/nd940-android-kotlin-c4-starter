@@ -1,6 +1,7 @@
 package com.udacity.project4.authentication.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.*
 import androidx.datastore.preferences.core.Preferences
@@ -44,6 +45,7 @@ class UserPreferences (
             preferences[KEY_USERNAME] = username
             preferences[KEY_USER_LOGGED_IN] = true
         }
+        Log.d("UserPreferences", "saveCredentials: isUserLoggedIn -> ${isUserLoggedIn()}")
     }
 
     suspend fun isUserLoggedIn(): Boolean = isUserLoggedIn.first() ?: false

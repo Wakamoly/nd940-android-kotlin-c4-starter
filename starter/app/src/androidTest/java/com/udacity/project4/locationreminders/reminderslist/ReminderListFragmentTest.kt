@@ -50,7 +50,7 @@ class ReminderListFragmentTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // 1. Check that left drawer is closed at startup.
-        onView(withId(R.id.mapsFragment)).perform(click())
+        onView(withId(R.id.selectLocationFragment)).perform(click())
 
         // 1.1. Navigation - back once
         onView(

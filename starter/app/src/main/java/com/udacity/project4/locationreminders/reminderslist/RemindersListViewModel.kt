@@ -7,12 +7,12 @@ import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
-    app: Application,
-    private val dataSource: ReminderDataSource
-) : BaseViewModel(app) {
+    private val dataSource: RemindersLocalRepository
+) : BaseViewModel(dataSource) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
 
@@ -50,6 +50,45 @@ class RemindersListViewModel(
             invalidateShowNoData()
         }
     }
+
+
+
+    // list that holds the reminder data to be displayed on the UI
+    val reminderSingle = MutableLiveData<ReminderDataItem>()
+
+    /**
+     * Get a single reminder from the DataSource and add it to be shown on the UI,
+     * or show error if any
+     */
+    fun loadReminderSingle(id: String) {
+        showLoading.value = true
+        viewModelScope.launch {
+            //interacting with the dataSource has to be through a coroutine
+            val result = dataSource.getReminder(id)
+            showLoading.postValue(false)
+            when (result) {
+                is Result.Success<*> -> {
+                    val reminder = result.data as ReminderDTO
+                    val reminderData = ReminderDataItem(
+                        reminder.title,
+                        reminder.description,
+                        reminder.location,
+                        reminder.latitude,
+                        reminder.longitude,
+                        reminder.id
+                    )
+                    reminderSingle.value = reminderData
+                }
+                is Result.Error ->
+                    showSnackBar.value = result.message
+            }
+
+            //check if no data has to be shown
+            invalidateShowNoData()
+        }
+    }
+
+
 
     /**
      * Inform the user that there's not any data if the remindersList is empty

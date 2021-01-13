@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_baseline_format_list_bulleted_24"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/mapsFragment"
+    <item android:id="@+id/selectLocationFragment"
         android:title="@string/bottom_navigation_map_title"
         android:icon="@drawable/ic_baseline_map_24"
         app:showAsAction="ifRoom" />
