@@ -45,24 +45,17 @@ class AuthenticationActivity : AppCompatActivity() {
             val factory = ViewModelFactory(AuthRepository(userPreferences))
             viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
 
-
-//          TODO: If the user was authenticated, send him to RemindersActivity
             viewModel.authenticationState.observe(this, Observer {
                 when(it){
                     AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                         navigateToRemindersActivity()
                     }
-                    else -> {
-
-                    }
+                    else -> { }
                 }
             })
 
-
 //          TODO: a bonus is to customize the sign in flow to look nice using :
             //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
-
-
 
         }
 

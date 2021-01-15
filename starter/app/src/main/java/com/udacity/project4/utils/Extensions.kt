@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import android.view.View
+import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.DecimalFormat
 
 
 /**
@@ -65,6 +67,16 @@ fun View.fadeOut() {
             this@fadeOut.visibility = View.GONE
         }
     })
+}
+
+fun Double.truncateLatLng(@IntRange(from = 1, to = 16) decimalPlaces: Int): Double {
+    val patternBuilder = StringBuilder("#.")
+    var places = decimalPlaces
+    while (decimalPlaces > 0) {
+        patternBuilder.append("#")
+        places--
+    }
+    return DecimalFormat(patternBuilder.toString()).format(this).toDouble()
 }
 
 object GeofencingConstants {

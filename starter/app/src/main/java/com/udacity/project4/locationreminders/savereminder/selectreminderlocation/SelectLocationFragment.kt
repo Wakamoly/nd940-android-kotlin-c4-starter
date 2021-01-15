@@ -38,6 +38,7 @@ import com.udacity.project4.locationreminders.reminderslist.RemindersListViewMod
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.ViewModelFactory
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.udacity.project4.utils.truncateLatLng
 import org.koin.android.ext.android.inject
 import java.util.*
 
@@ -134,6 +135,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
 
     private fun initSaveLocationClickListeners() {
         binding.btnSave.visibility = View.VISIBLE
+
         binding.btnSave.setOnClickListener {
             if (marker == null) {
                 _viewModel.showErrorMessage.value = (getString(R.string.select_poi))
@@ -158,7 +160,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
         map.setOnMapClickListener {
             marker?.remove()
 
-            val snippet = "${it.latitude}, ${it.longitude}"
+            val snippet = "${it.latitude.truncateLatLng(5)}, ${it.longitude.truncateLatLng(5)}"
             _viewModel.updateSelectedLocation(it, snippet)
 
             marker = map.addMarker(
