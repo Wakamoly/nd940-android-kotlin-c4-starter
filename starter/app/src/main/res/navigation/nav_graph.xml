@@ -19,21 +19,20 @@
         android:label="ReminderListFragment"
         tools:layout="@layout/fragment_reminders">
         <action
-            android:id="@+id/to_save_reminder"
+            android:id="@+id/reminderListFragment_to_save_reminder"
             app:destination="@id/saveReminderFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/selectLocationFragment"
+            android:id="@+id/reminderListFragment_to_selectLocationFragment"
             app:destination="@id/selectLocationFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/selectLocationFragment"
-            />
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -47,7 +46,9 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/reminderListFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
             app:destination="@id/selectLocationFragment"
@@ -69,17 +70,16 @@
         android:label="Reminder Map"
         tools:layout="@layout/fragment_select_location">
 
-        <!-- flipped id to override animations in BottomNavigationUI.kt -->
         <action
-            android:id="@+id/reminderListFragment"
-            app:launchSingleTop="true"
+            android:id="@+id/saveReminderFragment_to_reminderListFragment"
             app:destination="@id/reminderListFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left"
             app:popUpTo="@id/reminderListFragment"
-            />
+            app:popUpToInclusive="true" />
 
         <argument
             android:name="reminder"

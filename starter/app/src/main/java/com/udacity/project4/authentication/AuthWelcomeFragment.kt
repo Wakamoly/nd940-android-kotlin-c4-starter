@@ -29,12 +29,6 @@ class AuthWelcomeFragment : BaseFragment<AuthViewModel, AuthWelcomeFragmentBindi
         const val SIGN_IN_RESULT_CODE = 1001
     }
 
-    // TODO: 1/3/21 Remove one of these view model declarations
-
-    private val authViewModel : AuthViewModel by activityViewModels { ViewModelFactory(AuthRepository(userPreferences)) }
-
-    private lateinit var remindersDao: RemindersDao
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mCtx = requireContext()

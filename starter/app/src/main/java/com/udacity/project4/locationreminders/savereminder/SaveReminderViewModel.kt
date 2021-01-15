@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -106,6 +107,7 @@ class SaveReminderViewModel(
         snippet: String,
         pointOfInterest: PointOfInterest? = null
     ) {
+        Log.d("SRVM", "updateSelectedLocation: $snippet")
         selectedPOI.postValue(pointOfInterest)
         latitude.postValue(latLng.latitude)
         longitude.postValue(latLng.longitude)

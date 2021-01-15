@@ -2,10 +2,12 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -43,7 +45,7 @@ fun Fragment.setTitle(title: String) {
 fun Fragment.setDisplayHomeAsUpEnabled(bool: Boolean) {
     if (activity is AppCompatActivity) {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
-            bool
+                bool
         )
     }
 }
@@ -69,14 +71,17 @@ fun View.fadeOut() {
     })
 }
 
-fun Double.truncateLatLng(@IntRange(from = 1, to = 16) decimalPlaces: Int): Double {
-    val patternBuilder = StringBuilder("#.")
-    var places = decimalPlaces
-    while (decimalPlaces > 0) {
-        patternBuilder.append("#")
-        places--
-    }
-    return DecimalFormat(patternBuilder.toString()).format(this).toDouble()
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
 object GeofencingConstants {

@@ -14,11 +14,11 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import androidx.navigation.ui.NavigationUI.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityRemindersBinding
-import com.udacity.project4.databinding.FragmentRemindersBinding
-import com.udacity.project4.utils.BottomNavigationUI
 import kotlinx.android.synthetic.main.activity_reminders.*
 
 /**
@@ -40,17 +40,14 @@ class RemindersActivity : AppCompatActivity() {
 
         val navController: NavController = Navigation.findNavController(this, R.id.nav_host_fragment)
         val bottomNavigationView = binding.bottomNavigation
+        val navView = binding.navView
 
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
-        NavigationUI.setupWithNavController(binding.navView, navController)
-
+        navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        findViewById<NavigationView>(R.id.nav_view)
-            .setupWithNavController(navController)
-
-        BottomNavigationUI.setupWithNavController(bottomNavigationView, navController)
-        //bottomNavigationView.setOnNavigationItemReselectedListener { false }
+        navView.setupWithNavController(navController)
+        bottomNavigationView.setupWithNavController(navController)
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             navController.navigate(it.itemId)

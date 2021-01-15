@@ -2,9 +2,6 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
@@ -13,20 +10,15 @@ import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
-import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.BaseFragmentSaveVM
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
@@ -35,11 +27,7 @@ import com.udacity.project4.locationreminders.data.local.RemindersDao
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.ViewModelFactory
-import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import com.udacity.project4.utils.truncateLatLng
-import org.koin.android.ext.android.inject
 import java.util.*
 
 class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>() {
@@ -54,7 +42,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
     private lateinit var map: GoogleMap
     private lateinit var remindersDao: RemindersDao
 
-    private val remindersViewModel by activityViewModels<RemindersListViewModel> { ViewModelFactory(RemindersLocalRepository(remindersDao)) }
+    private lateinit var remindersViewModel: RemindersListViewModel
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
@@ -113,17 +101,16 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
         mapFragment.getMapAsync(callback)
 
         setHasOptionsMenu(true)
-        setDisplayHomeAsUpEnabled(true)
 
         return binding.root
     }
 
     private fun initObservers() {
-        // TODO: 1/9/21 Navigate accordingly
         if (args.reminder != null){
             addMarker(args.reminder!!, true)
             initSaveLocationClickListeners()
         } else {
+            remindersViewModel = ViewModelFactory(RemindersLocalRepository(remindersDao)).create(RemindersListViewModel::class.java)
             remindersViewModel.loadReminders()
             remindersViewModel.remindersList.observe(viewLifecycleOwner, Observer {
                 for (i in it){
@@ -138,7 +125,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
 
         binding.btnSave.setOnClickListener {
             if (marker == null) {
-                _viewModel.showErrorMessage.value = (getString(R.string.select_poi))
+                _viewModel.showErrorMessage.value = (getString(R.string.select_point))
             } else {
                 _viewModel.navigationCommand.postValue(NavigationCommand.Back)
             }
@@ -148,19 +135,20 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
             marker?.remove()
 
             val snippet = it.name
+            Log.d(TAG, "initSaveLocationClickListeners: $snippet")
             _viewModel.updateSelectedLocation(it.latLng, snippet, it)
 
             marker = map.addMarker(
                 MarkerOptions().position(it.latLng)
-                    .title("Selected Location")
+                    .title(getString(R.string.selected_location))
                     .snippet(snippet)
             )
         }
 
         map.setOnMapClickListener {
             marker?.remove()
-
-            val snippet = "${it.latitude.truncateLatLng(5)}, ${it.longitude.truncateLatLng(5)}"
+            val snippet = "${it.latitude}, ${it.longitude}"
+            Log.d(TAG, "initSaveLocationClickListeners: $snippet")
             _viewModel.updateSelectedLocation(it, snippet)
 
             marker = map.addMarker(
@@ -290,7 +278,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
                         lastKnownLocation = task.result
-                        if (lastKnownLocation != null) {
+                        if (lastKnownLocation != null && args.reminder == null) {
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 LatLng(lastKnownLocation?.latitude ?: defaultLocation.latitude,
                                     lastKnownLocation?.longitude ?: defaultLocation.longitude), defaultZoom

@@ -23,7 +23,9 @@ import com.udacity.project4.locationreminders.data.local.RemindersLocalRepositor
 import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.GeofencingConstants
+import com.udacity.project4.utils.hideKeyboard
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import java.util.*
 
 class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
 
@@ -40,6 +42,7 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mCtx = requireContext()
+        initView()
     }
 
     override fun onCreateView(
@@ -49,8 +52,6 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         setDisplayHomeAsUpEnabled(true)
-
-        initView()
 
         binding.lifecycleOwner = this
         binding.viewModel = _viewModel
@@ -74,41 +75,33 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
         binding.selectLocation.setOnClickListener {
             //            Navigate to another fragment to get the user location
             initReminderData()
+            hideKeyboard()
             _viewModel.navigationCommand.value =
                 NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment(reminderData))
         }
 
         binding.saveReminder.setOnClickListener {
             initReminderData()
-
             if (_viewModel.validateAndSaveReminder(reminderData)) {
                 addReminderGeofence(
                     reminderData.latitude!!,
                     reminderData.longitude!!,
                     reminderData.id
                 )
+                _viewModel.onClear()
             }
         }
     }
 
     private fun initReminderData() {
-        if (!::reminderData.isInitialized) {
-            reminderData = ReminderDataItem(
+        reminderData = ReminderDataItem(
                 _viewModel.reminderTitle.value,
                 _viewModel.reminderDescription.value,
                 _viewModel.reminderSelectedLocationStr.value,
                 _viewModel.latitude.value,
-                _viewModel.longitude.value
-            )
-        } else {
-            reminderData.apply {
-                title = _viewModel.reminderTitle.value
-                description = _viewModel.reminderDescription.value
-                location = _viewModel.reminderSelectedLocationStr.value
-                latitude = _viewModel.latitude.value
-                longitude = _viewModel.longitude.value
-            }
-        }
+                _viewModel.longitude.value,
+                _viewModel.reminderID.value ?: UUID.randomUUID().toString()
+        )
     }
 
     override fun onDestroy() {
