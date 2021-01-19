@@ -14,6 +14,28 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
  */
 class ReminderDescriptionActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityReminderDescriptionBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_reminder_description
+        )
+
+        if (intent.hasExtra(EXTRA_ReminderDataItem)) {
+            binding.reminderDataItem = intent.getParcelableExtra<ReminderDataItem>(EXTRA_ReminderDataItem)
+        }
+
+        binding.backToRemindersBtn.setOnClickListener {
+            val intent = Intent(this, RemindersActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            finish()
+            startActivity(intent)
+        }
+
+    }
+
     companion object {
         private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"
 
@@ -25,13 +47,4 @@ class ReminderDescriptionActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var binding: ActivityReminderDescriptionBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_reminder_description
-        )
-//        TODO: Add the implementation of the reminder details
-    }
 }

@@ -24,7 +24,7 @@ android {
     }
     buildTypes {
         debug {
-            // TODO to use Google Maps, put your API key into your local.properties as [apiKey = ...]
+            // TODO INSTRUCTOR: to use Google Maps, put your API key into your local.properties as [apiKey = ...]
             // and rebuild the project.
             resValue("string", "google_maps_key", localProperties['apiKey'])
         }
@@ -33,11 +33,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    android {
-        compileOptions {
-            sourceCompatibility 1.8
-            targetCompatibility 1.8
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -53,6 +51,23 @@ android {
     //}
     buildFeatures {
         dataBinding true
+    }
+
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
+    }
+
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+
+        test {
+            java.srcDir sharedTestDir
+        }
+
+        androidTest {
+            java.srcDir sharedTestDir
+        }
     }
 }
 
@@ -132,11 +147,11 @@ dependencies {
     implementation "androidx.fragment:fragment:$fragmentVersion"
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
-    androidTestImplementation('org.koin:koin-test:2.0.1') { exclude group: 'org.mockito' }
+    androidTestImplementation('org.koin:koin-test:2.1.6') { exclude group: 'org.mockito' }
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
-    implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
     //Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

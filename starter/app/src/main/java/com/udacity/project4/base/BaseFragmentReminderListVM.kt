@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.authentication.datastore.UserPreferences
 import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,21 +24,19 @@ import org.koin.android.ext.android.inject
 /**
  * Base Fragment to observe on the common LiveData objects
  */
-abstract class BaseFragmentSaveVM<B: ViewBinding> : Fragment() {
+abstract class BaseFragmentReminderListVM<B: ViewBinding> : Fragment() {
 
     protected lateinit var userPreferences: UserPreferences
     protected lateinit var binding : B
     protected lateinit var mCtx: Context
 
-    //Get the view model this time as a single to be shared with the other fragment
-    protected val _viewModel: SaveReminderViewModel by inject()
-
-    //protected val remoteDataSource = RemoteDataSource()
+    //Get the view model this time as a single to be shared with another fragment
+    protected val _viewModel: RemindersListViewModel by inject()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         userPreferences = UserPreferences(mCtx)
         binding = getFragmentBinding(inflater, container)
@@ -76,11 +74,11 @@ abstract class BaseFragmentSaveVM<B: ViewBinding> : Fragment() {
 
         _viewModel.navigationCommand.observe(this, { command ->
             when (command) {
-                is NavigationCommand.To -> findNavController().navigate(command.directions)
-                is NavigationCommand.Back -> findNavController().popBackStack()
-                is NavigationCommand.BackTo -> findNavController().popBackStack(
-                    command.destinationId,
-                    false
+                is NavigationCommand.To -> this.findNavController().navigate(command.directions)
+                is NavigationCommand.Back -> this.findNavController().popBackStack()
+                is NavigationCommand.BackTo -> this.findNavController().popBackStack(
+                        command.destinationId,
+                        false
                 )
             }
         })

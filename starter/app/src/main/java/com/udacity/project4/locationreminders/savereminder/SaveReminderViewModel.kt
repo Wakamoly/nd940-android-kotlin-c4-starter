@@ -7,18 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
+import com.udacity.project4.base.BaseRepository
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
-import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
+import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.launch
 
 class SaveReminderViewModel(
     private val app: Application,
-    private val reminderRepository: RemindersLocalRepository
-) : BaseViewModel(reminderRepository) {
+    private val reminderRepository: BaseRepository
+) : BaseViewModel() {
 
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
@@ -39,6 +39,10 @@ class SaveReminderViewModel(
         latitude.value = null
         longitude.value = null
         reminderID.value = null
+    }
+
+    fun clearLoading() {
+        showLoading.value = false
     }
 
     /**
@@ -70,19 +74,26 @@ class SaveReminderViewModel(
     private fun saveReminder(reminderData: ReminderDataItem) {
         showLoading.value = true
         viewModelScope.launch {
-            reminderRepository.saveReminder(
-                ReminderDTO(
-                    reminderData.title,
-                    reminderData.description,
-                    reminderData.location,
-                    reminderData.latitude,
-                    reminderData.longitude,
-                    reminderData.id
-                )
-            )
-            showLoading.value = false
-            showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.Back
+            if (reminderRepository.saveReminder(
+                            ReminderDTO(
+                                    reminderData.title,
+                                    reminderData.description,
+                                    reminderData.location,
+                                    reminderData.latitude,
+                                    reminderData.longitude,
+                                    reminderData.id
+                            )
+                    ) is Result.Success) {
+                showLoading.value = false
+                showToast.value = app.getString(R.string.reminder_saved)
+                navigationCommand.value = NavigationCommand.Back
+                Log.d("SaveReminderViewModel", "saveReminder: SUCCESS")
+            } else {
+                showLoading.value = false
+                showToast.value = app.getString(R.string.reminder_failed)
+                Log.d("SaveReminderViewModel", "saveReminder: FAILURE")
+            }
+            Log.d("SaveReminderViewModel", "saveReminder: END")
         }
     }
 
@@ -107,7 +118,7 @@ class SaveReminderViewModel(
         snippet: String,
         pointOfInterest: PointOfInterest? = null
     ) {
-        Log.d("SRVM", "updateSelectedLocation: $snippet")
+        Log.d("SaveReminderViewModel", "updateSelectedLocation: $snippet")
         selectedPOI.postValue(pointOfInterest)
         latitude.postValue(latLng.latitude)
         longitude.postValue(latLng.longitude)

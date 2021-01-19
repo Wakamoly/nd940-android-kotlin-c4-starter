@@ -38,7 +38,8 @@
                             app:layout_constraintTop_toBottomOf="@+id/bar_layout"
                             app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
                             app:defaultNavHost="true"
-                            app:navGraph="@navigation/nav_graph" />
+                            app:navGraph="@navigation/nav_graph"
+                            tools:ignore="FragmentTagUsage" />
 
                         <com.google.android.material.bottomnavigation.BottomNavigationView
                             android:id="@+id/bottom_navigation"
@@ -51,7 +52,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- Navigation Drawer -->
-                <!-- TODO finish menu -->
                 <com.google.android.material.navigation.NavigationView
                     android:id="@+id/nav_view"
                     android:layout_width="wrap_content"

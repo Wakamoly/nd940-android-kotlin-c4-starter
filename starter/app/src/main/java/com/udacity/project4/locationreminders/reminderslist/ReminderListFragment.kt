@@ -4,20 +4,16 @@ import android.os.Bundle
 import android.view.*
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
-import com.udacity.project4.base.BaseFragment
+import com.udacity.project4.base.BaseFragmentReminderListVM
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersDao
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 
 
-class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemindersBinding, RemindersLocalRepository>() {
-    //use Koin to retrieve the ViewModel instance
-    //override val _viewModel: RemindersListViewModel by viewModel()
-    //private lateinit var binding: FragmentRemindersBinding
+class ReminderListFragment : BaseFragmentReminderListVM<FragmentRemindersBinding>() {
 
     private lateinit var remindersDao: RemindersDao
 
@@ -30,12 +26,12 @@ class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
+        binding.viewModel = _viewModel
 
         setHasOptionsMenu(true)
         setTitle(getString(R.string.app_name))
 
-        binding.refreshLayout.setOnRefreshListener { viewModel.loadReminders() }
+        binding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
 
         binding.lifecycleOwner = this
         setupRecyclerView()
@@ -47,12 +43,12 @@ class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemind
     override fun onResume() {
         super.onResume()
         //load the reminders list on the ui
-        viewModel.loadReminders()
+        _viewModel.loadReminders()
     }
 
     private fun navigateToAddReminder(reminder: ReminderDataItem? = null) {
         //use the navigationCommand live data to navigate between the fragments
-        viewModel.navigationCommand.postValue(
+        _viewModel.navigationCommand.postValue(
             NavigationCommand.To(
                 ReminderListFragmentDirections.reminderListFragmentToSaveReminder(reminder)
             )
@@ -88,13 +84,9 @@ class ReminderListFragment : BaseFragment<RemindersListViewModel, FragmentRemind
         inflater.inflate(R.menu.main_menu, menu)
     }
 
-    override fun getViewModel() = RemindersListViewModel::class.java
-
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentRemindersBinding.inflate(inflater, container, false)
-
-    override fun getFragmentRepository() = RemindersLocalRepository(remindersDao)
 
 }

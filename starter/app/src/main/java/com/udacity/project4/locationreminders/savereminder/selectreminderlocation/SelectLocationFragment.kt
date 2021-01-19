@@ -10,9 +10,8 @@ import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,11 +23,9 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersDao
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.project4.utils.ViewModelFactory
-import java.util.*
+import org.koin.android.ext.android.inject
 
 class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>() {
 
@@ -42,7 +39,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
     private lateinit var map: GoogleMap
     private lateinit var remindersDao: RemindersDao
 
-    private lateinit var remindersViewModel: RemindersListViewModel
+    private val remindersViewModel: RemindersListViewModel by inject()
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
@@ -110,9 +107,8 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
             addMarker(args.reminder!!, true)
             initSaveLocationClickListeners()
         } else {
-            remindersViewModel = ViewModelFactory(RemindersLocalRepository(remindersDao)).create(RemindersListViewModel::class.java)
             remindersViewModel.loadReminders()
-            remindersViewModel.remindersList.observe(viewLifecycleOwner, Observer {
+            remindersViewModel.remindersList.observe(viewLifecycleOwner, {
                 for (i in it){
                     addMarker(i, false)
                 }
@@ -185,14 +181,6 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
         }
     }
 
-    // TODO: 1/13/21 Use this for adding a new reminder from the general map view?
-    private fun onLocationSelected() {
-        //        TODO: When the user confirms on the selected location,
-        //         send back the selected location details to the view model
-        //         and navigate back to the previous fragment to save the reminder and add the geofence
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
     }
@@ -227,6 +215,7 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
             == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true
             updateLocationUI()
+            getDeviceLocation()
         } else {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)

@@ -39,7 +39,8 @@
     <string name="geofence_not_available">Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.</string>
     <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
-    <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
+    <string name="error_adding_geofence">Error! Couldn\'t add geofence! Please ensure GPS High Accuracy is enabled in your device settings.</string>
+    <string name="reminder_failed">Reminder saving failed!</string>
 
     <!-- Others -->
     <string name="bottom_navigation_reminders_title">Reminders</string>
@@ -48,5 +49,10 @@
     <string name="navigation_view_header_title">Location Reminders</string>
     <string name="app_logo">App logo</string>
     <string name="selected_location">Selected Location</string>
+    <string name="latitude_desc">Latitude: %.6f</string>
+    <string name="longitude_desc">Longitude: %.6f</string>
+    <string name="back_to_reminders">Back to Reminders</string>
+    <string name="add_a_reminder">Add a reminder</string>
+    <string name="save_location">Save location</string>
 
 </resources>

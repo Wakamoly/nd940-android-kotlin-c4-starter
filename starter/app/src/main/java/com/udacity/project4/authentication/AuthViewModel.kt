@@ -8,23 +8,18 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val repository: AuthRepository
-) : BaseViewModel(repository) {
+) : BaseViewModel() {
 
     fun login (
         email: String,
-        password: String,
         username: String
     ) = viewModelScope.launch {
-        repository.login(email, password, username)
+        repository.login(email, username)
     }
 
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
     }
-
-    // TODO Create an authenticationState variable based off the FirebaseUserLiveData object. By
-    //  creating this variable, other classes will be able to query for whether the user is logged
-    //  in or not
 
     val authenticationState = FirebaseUserLiveData().map { user ->
         if (user != null) {

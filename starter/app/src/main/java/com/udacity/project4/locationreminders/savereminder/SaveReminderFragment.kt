@@ -17,9 +17,6 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragmentSaveVM
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
-import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.data.local.RemindersDao
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.GeofencingConstants
@@ -48,7 +45,7 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         setDisplayHomeAsUpEnabled(true)
@@ -67,6 +64,7 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
                 setValues(reminderData)
             }
         }
+        _viewModel.clearLoading()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,6 +86,7 @@ class SaveReminderFragment : BaseFragmentSaveVM<FragmentSaveReminderBinding>() {
                     reminderData.longitude!!,
                     reminderData.id
                 )
+                hideKeyboard()
                 _viewModel.onClear()
             }
         }
