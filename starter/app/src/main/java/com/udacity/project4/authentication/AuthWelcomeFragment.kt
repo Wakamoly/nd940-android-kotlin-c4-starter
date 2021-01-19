@@ -1,26 +1,12 @@
 package com.udacity.project4.authentication
 
-import android.app.Activity
-import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
-import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.AuthWelcomeFragmentBinding
-import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.data.local.RemindersDao
-import com.udacity.project4.utils.ViewModelFactory
 
 class AuthWelcomeFragment : BaseFragment<AuthViewModel, AuthWelcomeFragmentBinding, AuthRepository>() {
 
@@ -36,10 +22,7 @@ class AuthWelcomeFragment : BaseFragment<AuthViewModel, AuthWelcomeFragmentBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // TODO: Implement the create account and sign in using FirebaseUI, use sign in using email and sign in using Google
         binding.loginButton.setOnClickListener { launchSignInFlow() }
-
     }
 
     private fun launchSignInFlow() {

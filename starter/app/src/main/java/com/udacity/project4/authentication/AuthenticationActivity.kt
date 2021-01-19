@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.FirebaseApp
@@ -45,7 +44,7 @@ class AuthenticationActivity : AppCompatActivity() {
             val factory = ViewModelFactory(AuthRepository(userPreferences))
             viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
 
-            viewModel.authenticationState.observe(this, Observer {
+            viewModel.authenticationState.observe(this, {
                 when(it){
                     AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                         navigateToRemindersActivity()
@@ -53,10 +52,6 @@ class AuthenticationActivity : AppCompatActivity() {
                     else -> { }
                 }
             })
-
-//          TODO: a bonus is to customize the sign in flow to look nice using :
-            //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
-
         }
 
     }
@@ -77,7 +72,7 @@ class AuthenticationActivity : AppCompatActivity() {
                 // User successfully signed in
                 val user = FirebaseAuth.getInstance().currentUser
                 Log.i(AuthWelcomeFragment.TAG, "Successfully signed in user ${user?.displayName}!")
-                viewModel.login(user?.email ?: "", "", user?.displayName ?: "")
+                viewModel.login(user?.email ?: "", user?.displayName ?: "")
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
