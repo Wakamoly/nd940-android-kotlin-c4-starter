@@ -104,8 +104,8 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
 
     private fun initObservers() {
         if (args.reminder != null){
-            addMarker(args.reminder!!, true)
             initSaveLocationClickListeners()
+            addMarker(args.reminder!!, true)
         } else {
             remindersViewModel.loadReminders()
             remindersViewModel.remindersList.observe(viewLifecycleOwner, {
@@ -118,7 +118,6 @@ class SelectLocationFragment : BaseFragmentSaveVM<FragmentSelectLocationBinding>
 
     private fun initSaveLocationClickListeners() {
         binding.btnSave.visibility = View.VISIBLE
-
         binding.btnSave.setOnClickListener {
             if (marker == null) {
                 _viewModel.showErrorMessage.value = (getString(R.string.select_point))
